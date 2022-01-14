@@ -22,7 +22,14 @@ builder.Services.AddAuthentication(options =>
     o.Audience = config.GetValue<string>("Jwt:Audience");
 });
 
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy(name: "any", builder => 
+        builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
+});
+
 var app = builder.Build();
+app.UseCors("any");
 
 // Configure the HTTP request pipeline.
 
@@ -31,8 +38,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
